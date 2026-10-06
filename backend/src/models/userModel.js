@@ -3,11 +3,11 @@ const db = require('../config/db');
 const TABLE = 'users';
 
 async function findAll() {
-  return db(TABLE).select('id', 'name', 'email', 'role', 'is_active', 'created_at');
+  return db(TABLE).select('id', 'email', 'full_name', 'role', 'created_at', 'updated_at');
 }
 
 async function findById(id) {
-  return db(TABLE).select('id', 'name', 'email', 'role', 'is_active', 'created_at').where({ id }).first();
+  return db(TABLE).select('id', 'email', 'full_name', 'role', 'created_at', 'updated_at').where({ id }).first();
 }
 
 async function findByEmail(email) {

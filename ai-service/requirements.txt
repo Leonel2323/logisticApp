@@ -1,0 +1,8 @@
+fastapi==0.112.2
+uvicorn[standard]==0.30.6
+pydantic==2.12.3
+pandas==2.3.3
+numpy==2.4.6
+scikit-learn==1.9.1
+prophet==1.5.0
+python-dotenv==1.0.1
