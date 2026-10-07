@@ -1,11 +1,11 @@
-const { verifyToken } = require('../utils/jwt');
+const { verifyToken } = require('../services/authService');
 const { failure } = require('../utils/apiResponse');
 
-async function authMiddleware(req, res, next) {
+async function authenticate(req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return failure(res, 'Missing or malformed Authorization header', 401);
+    return failure(res, "En-tête Authorization manquant ou invalide.", 401);
   }
 
   const token = authHeader.split(' ')[1];
@@ -14,8 +14,17 @@ async function authMiddleware(req, res, next) {
     req.user = verifyToken(token);
     return next();
   } catch (err) {
-    return failure(res, 'Invalid or expired token', 401);
+    return failure(res, 'Token invalide ou expiré.', 401);
   }
 }
 
-module.exports = authMiddleware;
+function authorize(...roles) {
+  return (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return failure(res, 'Accès refusé : permissions insuffisantes.', 403);
+    }
+    return next();
+  };
+}
+
+module.exports = { authenticate, authorize };
