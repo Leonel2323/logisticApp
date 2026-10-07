@@ -8,12 +8,25 @@ import Vehicles from '../pages/Vehicles';
 import Drivers from '../pages/Drivers';
 import Fuel from '../pages/Fuel';
 import Layout from '../components/Layout';
+import Loader from '../components/Loader';
 import PrivateRoute from '../components/PrivateRoute';
+import { useAuth } from '../context/AuthContext';
+
+function RootRedirect() {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  return <Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />;
+}
 
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<RootRedirect />} />
         <Route path="/login" element={<Login />} />
 
         <Route element={<PrivateRoute />}>
@@ -28,7 +41,7 @@ export default function AppRouter() {
           </Route>
         </Route>
 
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
