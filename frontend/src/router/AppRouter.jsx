@@ -3,6 +3,7 @@ import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import Bookings from '../pages/Bookings';
 import Containers from '../pages/Containers';
+import ContainerNew from '../pages/ContainerNew';
 import Clients from '../pages/Clients';
 import Vehicles from '../pages/Vehicles';
 import Drivers from '../pages/Drivers';
@@ -34,6 +35,7 @@ export default function AppRouter() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/bookings" element={<Bookings />} />
             <Route path="/containers" element={<Containers />} />
+            <Route path="/containers/new" element={<ContainerNew />} />
             <Route path="/clients" element={<Clients />} />
             <Route path="/vehicles" element={<Vehicles />} />
             <Route path="/drivers" element={<Drivers />} />
