@@ -9,11 +9,6 @@ const router = express.Router();
 
 router.use(authenticate);
 
-// Enregistrée avant le middleware générique `/:id` ci-dessous : sinon
-// "stats" serait intercepté comme une valeur de :id et échouerait la
-// validation Joi (qui attend un entier).
-router.get('/stats/:id', validate(idParamSchema, 'params'), containerController.statsByBooking);
-
 router.use('/:id', validate(idParamSchema, 'params'));
 
 router.get('/', validate(list, 'query'), containerController.list);

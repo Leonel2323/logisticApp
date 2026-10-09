@@ -6,7 +6,6 @@ jest.mock('../../models/containerModel', () => ({
   remove: jest.fn(),
   markAsProcessed: jest.fn(),
   getMovements: jest.fn(),
-  getStatsByBooking: jest.fn(),
 }));
 
 const containerModel = require('../../models/containerModel');
@@ -18,7 +17,6 @@ const {
   remove,
   markProcessed,
   movements,
-  statsByBooking,
 } = require('../containerController');
 
 function mockRes() {
@@ -269,46 +267,5 @@ describe('movements', () => {
     await movements(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(404);
-  });
-});
-
-describe('statsByBooking', () => {
-  it('returns QTE_BK/QTE_ENL/SOLDE stats grouped by type', async () => {
-    const stats = [{ type: '40FT', qte_bk: 3, qte_enl: 1, solde: 2 }];
-    containerModel.getStatsByBooking.mockResolvedValue(stats);
-
-    const req = { params: { id: '101' } };
-    const res = mockRes();
-    const next = jest.fn();
-
-    await statsByBooking(req, res, next);
-
-    expect(containerModel.getStatsByBooking).toHaveBeenCalledWith('101');
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ data: stats }));
-  });
-
-  it('returns 404 when the booking does not exist', async () => {
-    containerModel.getStatsByBooking.mockResolvedValue(null);
-
-    const req = { params: { id: '999999' } };
-    const res = mockRes();
-    const next = jest.fn();
-
-    await statsByBooking(req, res, next);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ error: 'Réservation introuvable.' }));
-  });
-
-  it('forwards unexpected errors to next', async () => {
-    containerModel.getStatsByBooking.mockRejectedValue(new Error('db down'));
-
-    const req = { params: { id: '101' } };
-    const res = mockRes();
-    const next = jest.fn();
-
-    await statsByBooking(req, res, next);
-
-    expect(next).toHaveBeenCalledWith(expect.any(Error));
   });
 });

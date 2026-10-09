@@ -69,14 +69,4 @@ async function movements(req, res, next) {
   }
 }
 
-async function statsByBooking(req, res, next) {
-  try {
-    const stats = await containerModel.getStatsByBooking(req.params.id);
-    if (!stats) return failure(res, 'Réservation introuvable.', 404);
-    return success(res, stats);
-  } catch (err) {
-    return next(err);
-  }
-}
-
-module.exports = { list, detail, create, update, remove, markProcessed, movements, statsByBooking };
+module.exports = { list, detail, create, update, remove, markProcessed, movements };
