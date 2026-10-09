@@ -13,6 +13,7 @@ const cashTransactionRoutes = require('./cashTransactionRoutes');
 const expenseRoutes = require('./expenseRoutes');
 const chartOfAccountRoutes = require('./chartOfAccountRoutes');
 const chatEmbeddingRoutes = require('./chatEmbeddingRoutes');
+const importRoutes = require('./importRoutes');
 
 const router = express.Router();
 
@@ -31,5 +32,6 @@ router.use('/cash-transactions', cashTransactionRoutes);
 router.use('/expenses', expenseRoutes);
 router.use('/chart-of-accounts', chartOfAccountRoutes);
 router.use('/chat-embeddings', chatEmbeddingRoutes);
+router.use('/imports', importRoutes);
 
 module.exports = router;

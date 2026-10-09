@@ -56,6 +56,12 @@ async function findByContainerNumber(container_number, excludeId = null) {
   return query.first();
 }
 
+// Recherche groupée (import Excel) : une requête au lieu d'une par conteneur.
+async function findByContainerNumbers(numbers) {
+  if (numbers.length === 0) return [];
+  return db(TABLE).whereIn('container_number', numbers).select('*');
+}
+
 async function findById(id) {
   const container = await db(TABLE).where({ id }).first();
   if (!container) return null;
@@ -130,7 +136,9 @@ async function remove(id) {
   return container;
 }
 
-async function markAsProcessed(id, { vehicle_id, driver_id } = {}) {
+// processed_at : date du traitement (import historique) ; par défaut maintenant.
+// Non exposé par l'API : le schéma Joi markProcessed ne l'accepte pas.
+async function markAsProcessed(id, { vehicle_id, driver_id, processed_at } = {}) {
   const container = await db(TABLE).where({ id }).first();
   if (!container) return null;
 
@@ -139,7 +147,7 @@ async function markAsProcessed(id, { vehicle_id, driver_id } = {}) {
   }
 
   return db.transaction(async (trx) => {
-    const now = trx.fn.now();
+    const now = processed_at || trx.fn.now();
 
     const [updated] = await trx(TABLE)
       .where({ id })
@@ -165,20 +173,14 @@ async function getMovements(id) {
   return db('container_movements').where({ container_id: id }).select('*').orderBy('movement_datetime', 'desc');
 }
 
-// QTE_BK / QTE_ENL / SOLDE par type : même calcul que bookingModel.getStats,
-// exposé ici pour respecter la spec du module containers sans dupliquer le SQL.
-async function getStatsByBooking(bookingId) {
-  return bookingModel.getStats(bookingId);
-}
-
 module.exports = {
   findAll,
   findById,
   findByContainerNumber,
+  findByContainerNumbers,
   create,
   update,
   remove,
   markAsProcessed,
   getMovements,
-  getStatsByBooking,
 };

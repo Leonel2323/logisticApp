@@ -6,29 +6,40 @@
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "node --watch server.js",
     "start": "node server.js",
     "migrate": "knex migrate:latest",
     "migrate:rollback": "knex migrate:rollback",
     "migrate:make": "knex migrate:make",
     "seed": "knex seed:run",
     "seed:make": "knex seed:make",
-    "test": "jest"
+    "import:excel": "node scripts/importExcel.js",
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
     "joi": "^17.13.1",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
     "morgan": "^1.10.0",
+    "multer": "^2.4.0",
     "pg": "^8.12.0"
   },
   "devDependencies": {
-    "jest": "^30.5.2",
-    "nodemon": "^3.1.14"
+    "jest": "^30.5.2"
+  },
+  "overrides": {
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "^4.1.0"
+    },
+    "exceljs": {
+      "uuid": "^11.1.1"
+    }
   }
 }

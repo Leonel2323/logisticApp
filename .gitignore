@@ -32,3 +32,7 @@ coverage/
 
 # Docker
 *.pid
+
+# Données réelles importées (backend/scripts/importExcel.js)
+backend/data/*
+!backend/data/.gitkeep
