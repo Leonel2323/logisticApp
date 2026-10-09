@@ -1,0 +1,20 @@
+name: Fonctionnalité
+description: Proposer une évolution
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Besoin métier
+      description: Quel problème cela résout-il pour SOBRO ?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution envisagée
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Critères d'acceptation
+      placeholder: "- [ ] …"

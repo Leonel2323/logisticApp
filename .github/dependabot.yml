@@ -1,0 +1,30 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 5
+    groups:
+      frontend-mineures:
+        update-types: [minor, patch]
+    commit-message: { prefix: 'chore(frontend)' }
+
+  - package-ecosystem: npm
+    directory: /backend
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 5
+    groups:
+      backend-mineures:
+        update-types: [minor, patch]
+    commit-message: { prefix: 'chore(backend)' }
+
+  - package-ecosystem: pip
+    directory: /ai-service
+    schedule: { interval: weekly, day: monday }
+    open-pull-requests-limit: 3
+    commit-message: { prefix: 'chore(ai-service)' }
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }
+    commit-message: { prefix: 'chore(ci)' }

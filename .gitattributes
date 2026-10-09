@@ -1,0 +1,23 @@
+# Fins de ligne normalisées en LF dans le dépôt (fin des avertissements CRLF sous Windows).
+* text=auto eol=lf
+
+# Scripts Windows : CRLF obligatoire.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binaires : jamais de conversion ni de diff texte.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.pdf  binary
+*.woff binary
+*.woff2 binary
+*.xlsx binary
+*.xls  binary
+
+# Fichiers générés : repliés dans les diffs GitHub.
+package-lock.json linguist-generated=true -diff

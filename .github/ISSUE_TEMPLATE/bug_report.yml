@@ -1,0 +1,31 @@
+name: Bug
+description: Signaler un dysfonctionnement
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Que se passe-t-il ?
+      description: Comportement observé et comportement attendu.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Étapes pour reproduire
+      placeholder: "1. Aller sur /bookings\n2. Cliquer sur …"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Partie concernée
+      options: [frontend, backend, ai-service, base de données, CI]
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Messages d'erreur / logs
+      description: Retirez tout secret ou donnée client avant de coller.
+      render: shell

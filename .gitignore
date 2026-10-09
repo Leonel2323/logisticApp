@@ -1,38 +1,58 @@
-# Dependencies
+# ── Dépendances ──────────────────────────────
 node_modules/
-__pycache__/
-*.pyc
 .venv/
 venv/
+__pycache__/
+*.py[cod]
 
-# Env
+# ── Secrets / environnement ──────────────────
 .env
-.env.local
-.env.*.local
+.env.*
 !.env.example
+*.pem
+*.key
 
-# Build output
-frontend/dist/
-backend/dist/
+# ── Builds ───────────────────────────────────
+dist/
+build/
+.vite/
+*.egg-info/
+
+# ── Tests / couverture / caches d'outils ─────
+coverage/
+.nyc_output/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.eslintcache
+htmlcov/
+
+# ── Logs ─────────────────────────────────────
+logs/
 *.log
 npm-debug.log*
+*.pid
 
-# Editor / OS
-.vscode/
+# ── Données métier réelles (jamais versionnées) ──
+backend/data/*
+!backend/data/.gitkeep
+*.xlsx
+*.xls
+*.csv
+
+# ── Artefacts IA (modèles entraînés) ─────────
+ai-service/app/models/*
+!ai-service/app/models/.gitkeep
+*.pkl
+*.joblib
+
+# ── Éditeurs / OS ────────────────────────────
+.vscode/*
+!.vscode/extensions.json
 .idea/
 .DS_Store
 Thumbs.db
 
-# Logs
-logs/
-*.log
-
-# Testing
-coverage/
-
-# Docker
-*.pid
-
-# Données réelles importées (backend/scripts/importExcel.js)
-backend/data/*
-!backend/data/.gitkeep
+# ── Outils IA locaux ─────────────────────────
+.claude/settings.local.json
+.claude/skills/

@@ -1,0 +1,62 @@
+name: Migrations
+
+# Vérifie que les migrations Knex s'appliquent et se défont sur une base vierge
+# (même version majeure que Supabase : PostgreSQL 17 + pgvector).
+on:
+  pull_request:
+    paths:
+      - 'backend/src/db/migrations/**'
+      - 'backend/knexfile.js'
+      - 'backend/package-lock.json'
+      - '.github/workflows/migrations.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/src/db/migrations/**'
+      - 'backend/knexfile.js'
+      - '.github/workflows/migrations.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  migrations:
+    name: migrate:latest → rollback → latest
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: pgvector/pgvector:pg17
+        env:
+          POSTGRES_PASSWORD: ci
+          POSTGRES_DB: sobro_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    defaults:
+      run:
+        working-directory: backend
+    env:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:ci@localhost:5432/sobro_ci
+      PGPASSWORD: ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - run: npm ci
+      # Objets fournis par Supabase et utilisés par la migration 20261007000001.
+      - name: Préparer les objets Supabase (schéma extensions, rôles anon/authenticated)
+        run: |
+          psql -h localhost -U postgres -d sobro_ci -v ON_ERROR_STOP=1 -c "CREATE SCHEMA IF NOT EXISTS extensions;"
+          psql -h localhost -U postgres -d sobro_ci -v ON_ERROR_STOP=1 -c "CREATE ROLE anon NOLOGIN;"
+          psql -h localhost -U postgres -d sobro_ci -v ON_ERROR_STOP=1 -c "CREATE ROLE authenticated NOLOGIN;"
+      - run: npx knex migrate:latest
+      - run: npx knex migrate:rollback --all
+      - run: npx knex migrate:latest
