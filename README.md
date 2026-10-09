@@ -59,6 +59,34 @@ uvicorn main:app --reload
 - **Vehicles** — flotte de véhicules
 - **Drivers** — chauffeurs
 - **Fuel** — transactions de carburant (+ détection d'anomalies IA)
+- **Import Excel** — reprise des données existantes (voir ci-dessous)
+
+## Import des données Excel
+
+Le fichier de suivi des bookings (`.xlsx`, colonnes DATE, HEURE, N°TC, MARCHANDISES,
+TYPE TC, N° BOOKING, COMPAGNIE, ETAT (P/V), CLIENTS, CONTACT_TEL, IM_TRAC,
+IM_REMORQUE, IN) crée ou complète clients, bookings, véhicules, conteneurs et
+mouvements IN. L'import est **idempotent** : relancer le même fichier ne crée rien
+de plus.
+
+- **Depuis l'application** (administrateurs) : menu **Import Excel** → choisir le
+  fichier → **Analyser** (aperçu, rien n'est enregistré) → **Importer**.
+  5 Mo et 100 lignes maximum.
+- **En ligne de commande** (gros fichiers) : déposer le fichier dans `backend/data/`
+  (ignoré par git), puis :
+
+  ```bash
+  cd backend
+  npm run import:excel -- --dry-run   # aperçu, aucune écriture
+  npm run import:excel                # import réel (journal dans backend/logs/)
+  ```
+
+### Procédure en production
+
+1. Sauvegarder la base (Supabase → Database → Backups) avant tout import.
+2. Lancer d'abord l'aperçu et corriger dans le fichier les lignes en erreur.
+3. Lancer l'import réel, puis vérifier le rapport (créations, erreurs ligne par ligne).
+4. Ne jamais lancer `npm run seed` en production : `01_demo_data` efface les données.
 
 ## Variables d'environnement
 
