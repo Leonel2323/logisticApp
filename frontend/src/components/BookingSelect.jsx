@@ -1,5 +1,5 @@
 import { useId, useMemo, useState } from 'react';
-import { useBookings } from '../hooks/useBookings';
+import { useBooking, useBookings } from '../hooks/useBookings';
 import { useClients } from '../hooks/useClients';
 
 /**
@@ -13,9 +13,11 @@ import { useClients } from '../hooks/useClients';
  * @param {number|string} [props.value] - id du booking sélectionné
  * @param {(id: number) => void} props.onChange
  * @param {string} [props.error] - Message d'erreur à afficher.
+ * @param {string} [props.hint] - Message d'information discret sous le champ.
  */
-export default function BookingSelect({ value, onChange, error }) {
+export default function BookingSelect({ value, onChange, error, hint }) {
   const listboxId = useId();
+  const hintId = useId();
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
 
@@ -31,7 +33,11 @@ export default function BookingSelect({ value, onChange, error }) {
     return `${booking.booking_number} — ${booking.shipping_company} — ${clientName}`;
   }
 
-  const selected = bookings.find((booking) => String(booking.id) === String(value));
+  // Un booking présélectionné peut être plus ancien que les 100 chargés : on le
+  // récupère alors individuellement pour pouvoir afficher son libellé.
+  const selectedInList = bookings.find((booking) => String(booking.id) === String(value));
+  const { data: selectedFallback } = useBooking(value && !loading && !selectedInList ? value : null);
+  const selected = selectedInList ?? selectedFallback;
 
   const filtered = useMemo(() => {
     if (!query) return bookings;
@@ -61,6 +67,7 @@ export default function BookingSelect({ value, onChange, error }) {
           aria-controls={listboxId}
           aria-autocomplete="list"
           aria-invalid={Boolean(error)}
+          aria-describedby={hint ? hintId : undefined}
           autoComplete="off"
           disabled={loading}
           value={displayValue}
@@ -110,6 +117,11 @@ export default function BookingSelect({ value, onChange, error }) {
           </ul>
         )}
       </div>
+      {hint && (
+        <p id={hintId} className="text-xs text-slate-500">
+          {hint}
+        </p>
+      )}
       {error && (
         <p role="alert" className="text-xs text-red-600">
           {error}

@@ -25,6 +25,7 @@ export function useCreateContainer() {
     mutationFn: (data) => containerService.createContainer(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['containers'] });
+      queryClient.invalidateQueries({ queryKey: ['booking-stats'] });
       showToast('Conteneur créé avec succès.', 'success');
     },
     onError: (err) => {
@@ -41,6 +42,7 @@ export function useUpdateContainer() {
     mutationFn: ({ id, data }) => containerService.updateContainer(id, data),
     onSuccess: (_result, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['containers'] });
+      queryClient.invalidateQueries({ queryKey: ['booking-stats'] });
       queryClient.invalidateQueries({ queryKey: ['container', id] });
       showToast('Conteneur mis à jour avec succès.', 'success');
     },
@@ -58,6 +60,7 @@ export function useDeleteContainer() {
     mutationFn: (id) => containerService.deleteContainer(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['containers'] });
+      queryClient.invalidateQueries({ queryKey: ['booking-stats'] });
       showToast('Conteneur supprimé avec succès.', 'success');
     },
     onError: (err) => {
@@ -74,6 +77,7 @@ export function useMarkContainerProcessed() {
     mutationFn: ({ id, data }) => containerService.markContainerProcessed(id, data),
     onSuccess: (_result, { id }) => {
       queryClient.invalidateQueries({ queryKey: ['containers'] });
+      queryClient.invalidateQueries({ queryKey: ['booking-stats'] });
       queryClient.invalidateQueries({ queryKey: ['container', id] });
       showToast('Conteneur marqué comme traité.', 'success');
     },
@@ -88,13 +92,5 @@ export function useContainerMovements(id) {
     queryKey: ['container', id, 'movements'],
     queryFn: () => containerService.getContainerMovements(id),
     enabled: Boolean(id),
-  });
-}
-
-export function useContainerStatsByBooking(bookingId) {
-  return useQuery({
-    queryKey: ['containers', 'stats', bookingId],
-    queryFn: () => containerService.getContainerStatsByBooking(bookingId),
-    enabled: Boolean(bookingId),
   });
 }

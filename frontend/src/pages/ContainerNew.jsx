@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import FormInput from '../components/FormInput';
 import FormSelect from '../components/FormSelect';
 import BookingSelect from '../components/BookingSelect';
 import ClientSelect from '../components/ClientSelect';
 import { useCreateContainer } from '../hooks/useContainers';
+import { useBooking } from '../hooks/useBookings';
 
 const TYPE_OPTIONS = [
   { value: '40FT', label: '40FT' },
@@ -23,10 +24,22 @@ export default function ContainerNew() {
   const [submitError, setSubmitError] = useState(null);
   const createContainer = useCreateContainer();
 
+  // ?booking_id=<id> (ex. depuis /bookings/:id) : présélectionne le booking s'il
+  // existe. Un id mal formé est traité comme introuvable sans appeler l'API.
+  const [searchParams] = useSearchParams();
+  const bookingIdParam = searchParams.get('booking_id');
+  const requestedBookingId = /^[1-9]\d*$/.test(bookingIdParam ?? '') ? bookingIdParam : null;
+  const requestedBooking = useBooking(requestedBookingId);
+  const requestedBookingData = requestedBooking.data;
+  const bookingNotFound =
+    Boolean(bookingIdParam) && (!requestedBookingId || requestedBooking.error?.status === 404);
+
   const {
     register,
     handleSubmit,
     control,
+    setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -39,6 +52,12 @@ export default function ContainerNew() {
       arrival_datetime: '',
     },
   });
+
+  useEffect(() => {
+    if (requestedBookingData && !getValues('booking_id')) {
+      setValue('booking_id', requestedBookingData.id);
+    }
+  }, [requestedBookingData, getValues, setValue]);
 
   function onSubmit(values) {
     setSubmitError(null);
@@ -134,7 +153,12 @@ export default function ContainerNew() {
           name="booking_id"
           rules={{ required: 'Le booking est requis.' }}
           render={({ field, fieldState }) => (
-            <BookingSelect value={field.value} onChange={field.onChange} error={fieldState.error?.message} />
+            <BookingSelect
+              value={field.value}
+              onChange={field.onChange}
+              error={fieldState.error?.message}
+              hint={bookingNotFound && !field.value ? 'Booking introuvable' : undefined}
+            />
           )}
         />
 

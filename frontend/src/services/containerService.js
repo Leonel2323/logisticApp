@@ -28,7 +28,3 @@ export function markContainerProcessed(id, data = {}) {
 export function getContainerMovements(id) {
   return unwrapResponse(api.get(`/containers/${id}/movements`));
 }
-
-export function getContainerStatsByBooking(bookingId) {
-  return unwrapResponse(api.get(`/containers/stats/${bookingId}`));
-}

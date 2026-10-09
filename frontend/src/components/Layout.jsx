@@ -9,10 +9,12 @@ const links = [
   { to: '/vehicles', label: 'Vehicles' },
   { to: '/drivers', label: 'Drivers' },
   { to: '/fuel', label: 'Fuel' },
+  { to: '/import', label: 'Import Excel', adminOnly: true },
 ];
 
 export default function Layout() {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
+  const visibleLinks = links.filter((link) => !link.adminOnly || user?.role === 'admin');
 
   return (
     <div className="flex min-h-screen">
@@ -21,7 +23,7 @@ export default function Layout() {
           SOBRO Logistics
         </div>
         <nav className="flex-1 px-2 py-4 space-y-1">
-          {links.map((link) => (
+          {visibleLinks.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
