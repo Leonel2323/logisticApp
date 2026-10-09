@@ -27,7 +27,7 @@ logisticApp/
 
 ```bash
 cd backend
-cp .env.example .env   # renseigner DATABASE_URL (Supabase) et JWT_SECRET
+cp .env.example .env   # renseigner DATABASE_URL, JWT_SECRET et ADMIN_PASSWORD (seed admin)
 npm install
 npm run migrate
 npm run dev
@@ -87,6 +87,12 @@ de plus.
 2. Lancer d'abord l'aperçu et corriger dans le fichier les lignes en erreur.
 3. Lancer l'import réel, puis vérifier le rapport (créations, erreurs ligne par ligne).
 4. Ne jamais lancer `npm run seed` en production : `01_demo_data` efface les données.
+
+## Documentation
+
+- [Architecture](docs/architecture.md) et décisions ([docs/adr/](docs/adr/))
+- [Runbook import Excel](docs/runbooks/import-excel.md)
+- CI : [.github/workflows/](.github/workflows/) — lint, tests, build, migrations, CodeQL
 
 ## Variables d'environnement
 
